@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Crops</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #343a40;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bff;
+        }
+
+        .main-content {
+            margin-left: 270px; /* Adjust based on the width of the sidebar */
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-edit, .btn-delete {
+            width: 100px; /* Fixed width for buttons */
+            margin: 0 5px; /* Margin between buttons */
+        }
+
+        .btn-edit {
+            background-color: #ffc107; /* Yellow for edit */
+        }
+
+        .btn-delete {
+            background-color: #dc3545; /* Red for delete */
+        }
+
+        .btn-edit:hover {
+            background-color: #e0a800; /* Darker yellow on hover */
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333; /* Darker red on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h3 class="text-center text-white">Admin Menu</h3>
+        <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+        <a href="{% url 'manage_users' %}">Manage Users</a>
+ 
+        <a href="{% url 'add_crop' %}">Add Crops</a>
+        <a href="{% url 'manage_crops' %}">Manage Crops</a>
+        <a href="{% url 'feedback_admin' %}">Feedbacks</a>
+        <a href="{% url 'logout' %}">Logout</a>
+      
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h1>Manage Crops</h1>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Crop Name</th>
+                        <th>Image</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Stock Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for crop in crops %}
+                    <tr>
+                        <td>{{ crop.name }}</td>
+                        <td><img src="{{ crop.image.url }}" alt="{{ crop.name }}" style="width: 50px; height: auto;"></td>
+                        <td>{{ crop.description }}</td>
+                        <td>₹ {{ crop.price }}</td>
+                        <td>{{ crop.stock_quantity }}</td>
+                        <td>
+                            <a href="{% url 'edit_crop' crop.id %}" class="btn btn-edit">Edit</a>
+                            <form action="{% url 'delete_crop' crop.id %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No crops available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

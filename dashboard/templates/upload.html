@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV for Crop Prediction</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e6e6fa; /* Lavender */
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d3d3f5; /* Light Lavender */
+            border-radius: 5px;
+        }
+        .btn-custom {
+            background-color: #32cd32; /* Pista Green */
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Upload CSV for Crop Prediction</h1>
+        <form id="uploadForm">
+            <div class="form-group">
+                <label for="csvFile">Select CSV File:</label>
+                <input type="file" id="csvFile" class="form-control-file" accept=".csv" required>
+            </div>
+            <div class="form-group">
+                <button type="button" id="uploadButton" class="btn btn-custom">Upload and Predict</button>
+            </div>
+        </form>
+        <div id="resultDiv" class="result d-none">
+            <h3>Prediction Result:</h3>
+            <p id="predictionResult"></p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', function() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select a CSV file.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const csvData = event.target.result;
+                const attributes = processCSV(csvData);
+                if (attributes) {
+                    // Redirect to the recommend_crop page with attributes
+                    const queryString = new URLSearchParams(attributes).toString();
+                    window.location.href = `/recommend_crop/?${queryString}`;
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        function processCSV(data) {
+            const rows = data.split('\n').map(row => row.split(','));
+            if (rows.length < 2) {
+                alert('Invalid CSV file format.');
+                return null;
+            }
+
+            const headers = rows[0];
+            const values = rows[1];
+
+            if (headers.length !== values.length) {
+                alert('CSV file format mismatch.');
+                return null;
+            }
+
+            const attributes = {};
+            headers.forEach((header, index) => {
+                attributes[header.trim()] = parseFloat(values[index].trim());
+            });
+
+            return attributes;
+        }
+    </script>
+</body>
+</html>

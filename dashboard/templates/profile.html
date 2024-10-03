@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e0f7fa; /* Light Blue Background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .account-container {
+            background: #ffffff; /* White Background */
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            max-width: 700px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #00796b; /* Dark Teal */
+            text-align: center;
+        }
+
+        .profile-section, .recommendation-section {
+            margin-top: 30px;
+        }
+
+        .profile-info, .edit-profile, .recommendation-form {
+            background: #f1f8e9; /* Light Green */
+            border: 1px solid #c5e1a5; /* Light Green Border */
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .profile-info h2, .edit-profile h2, .recommendation-section h2 {
+            font-size: 28px;
+            color: #004d40; /* Teal */
+            margin-top: 0;
+        }
+
+        .profile-info p, .edit-profile label, .recommendation-form label {
+            font-size: 18px;
+            color: #004d40; /* Teal */
+            margin: 10px 0;
+        }
+
+        .profile-info p strong {
+            color: #00796b; /* Dark Teal */
+        }
+
+        .profile-info p, .edit-profile input[type="text"],
+        .edit-profile input[type="email"], .edit-profile input[type="tel"],
+        .recommendation-form input[type="number"], .recommendation-form input[type="text"] {
+            display: block;
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #a5d6a7; /* Light Green */
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .edit-profile button, .recommendation-form button {
+            background-color: #00796b; /* Dark Teal */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px 5px 0 0;
+            transition: background-color 0.3s;
+        }
+
+        .edit-profile button:hover, .recommendation-form button:hover {
+            background-color: #004d40; /* Teal */
+        }
+
+        .edit-profile button.cancel {
+            background-color: #004d40; /* Teal */
+        }
+
+        .edit-profile button.cancel:hover {
+            background-color: #00251a; /* Darker Teal */
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body onload="fetchProfileData()">
+    <div class="account-container">
+        <h1>My Account</h1>
+        <div class="profile-section">
+            <div class="profile-info">
+                <h2>Profile Details</h2>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Phone:</strong> {{ user.phone }}</p>
+                <button id="edit-btn" onclick="editProfile()">Edit Profile</button>
+            </div>
+
+            <div class="edit-profile" id="edit-profile-section" style="display: none;">
+                <h2>Edit Profile</h2>
+                <form id="edit-form" onsubmit="updateProfile(event)">
+                    <label for="new-username">Username:</label>
+                    <input type="text" id="new-username" name="username" required>
+                    <label for="new-email">Email:</label>
+                    <input type="email" id="new-email" name="email" required>
+                    <label for="new-phone">Phone:</label>
+                    <input type="tel" id="new-phone" name="phone" required>
+                    <button type="submit">Update</button>
+                    <button type="button" class="cancel" onclick="cancelEdit()">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="recommendation-section">
+            <h2>Crop Recommendation</h2>
+            <form id="recommend-form" onsubmit="getCropRecommendation(event)">
+                <label for="nitrogen">Nitrogen:</label>
+                <input type="number" id="nitrogen" name="nitrogen" required>
+                <label for="phosphorus">Phosphorus:</label>
+                <input type="number" id="phosphorus" name="phosphorus" required>
+                <label for="potassium">Potassium:</label>
+                <input type="number" id="potassium" name="potassium" required>
+                <label for="temperature">Temperature:</label>
+                <input type="number" id="temperature" name="temperature" required>
+                <label for="rainfall">Rainfall:</label>
+                <input type="number" id="rainfall" name="rainfall" required>
+                <label for="ph">pH:</label>
+                <input type="number" step="0.1" id="ph" name="ph" required>
+                <label for="humidity">Humidity:</label>
+                <input type="number" id="humidity" name="humidity" required>
+                <button type="submit">Get Recommendation</button>
+            </form>
+            <p id="recommendation-result">Recommendation will appear here</p>
+        </div>
+    </div>
+
+    <script>
+        // Fetch user profile data on page load
+        function fetchProfileData() {
+            fetch('/get-profile/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById("username").innerText = data.username;
+                        document.getElementById("email").innerText = data.email;
+                        document.getElementById("phone").innerText = data.phone;
+                    } else {
+                        alert('Error fetching profile data');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while fetching the profile data');
+                });
+        }
+
+        // Show edit form and hide profile details
+        function editProfile() {
+            document.getElementById("edit-profile-section").style.display = "block";
+            document.querySelector(".profile-info").style.display = "none";
+        }
+
+        // Cancel editing and return to profile details
+        function cancelEdit() {
+            document.getElementById("edit-profile-section").style.display = "none";
+            document.querySelector(".profile-info").style.display = "block";
+        }
+
+        // Update profile details
+        function updateProfile(event) {
+            event.preventDefault();  // Prevent form from refreshing the page
+
+            const newUsername = document.getElementById("new-username").value;
+            const newEmail = document.getElementById("new-email").value;
+            const newPhone = document.getElementById("new-phone").value;
+
+            // Send AJAX request to update profile details
+            fetch('/update-profile/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: newUsername,
+                    email: newEmail,
+                    phone: newPhone
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Profile updated successfully');
+                    fetchProfileData();  // Refresh profile data
+                    cancelEdit();  // Hide edit form
+                } else {
+                    alert('Error updating profile: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the profile');
+            });
+        }
+
+        // Get crop recommendation
+        function getCropRecommendation(event) {
+            event.preventDefault();  // Prevent form from refreshing the page
+
+            const nitrogen = document.getElementById("nitrogen").value;
+            const phosphorus = document.getElementById("phosphorus").value;
+            const potassium = document.getElementById("potassium").value;
+            const temperature = document.getElementById("temperature").value;
+            const rainfall = document.getElementById("rainfall").value;
+            const ph = document.getElementById("ph").value;
+            const humidity = document.getElementById("humidity").value;
+
+            // Send AJAX request to get crop recommendation
+            fetch('/get-crop-recommendation/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nitrogen: nitrogen,
+                    phosphorus: phosphorus,
+                    potassium: potassium,
+                    temperature: temperature,
+                    rainfall: rainfall,
+                    ph: ph,
+                    humidity: humidity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("recommendation-result").innerText = data.recommendation;
+                } else {
+                    document.getElementById("recommendation-result").innerText = 'Error getting recommendation';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById("recommendation-result").innerText = 'An error occurred while getting the recommendation';
+            });
+        }
+    </script>
+</body>
+</html>

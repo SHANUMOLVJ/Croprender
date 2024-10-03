@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Purchase - CropTech</title>
+    {% load static %}
+    <style>
+        /* Basic reset */
+        /* Basic reset */
+        /* Basic reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light background color */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            background-color: rgb(0, 0, 0);
+            padding: 15px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+            background-color: #000;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #ec5e17;
+        }
+        .logo {
+            height: 10px; /* Adjust size as needed */
+            width: auto; /* Maintain aspect ratio */
+            margin-right: 1250px;
+            font-size: 1.5em;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="menu">
+            <a href="{% url 'home' %}" class="logo">CropTech</a>
+            <a href="{% url 'home' %}">Home</a>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'my_account' %}">{{ user.username }}</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+        
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact_us' %}">Contact Us</a>
+            <a href="{% url 'chatbot' %}">Any Help</a>
+            <a href="{% url 'view_cart' %}" class="cart-link">Cart
+                {% if cart_count > 0 %}
+                    <span class="cart-count">({{ cart_count }})</span>
+                {% endif %}
+            </a>
+        </div>
+    </nav><br><br><br><br><br>
+    <div class="container">
+        <h1>Confirm Purchase</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Crop</th>
+                  
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for crop in crops %}
+                <tr>
+              
+                    <td>{{ crop.name }}</td>
+                  
+                    <td>₹{{ crop.price|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h2>Total Price: ₹{{ total_price|floatformat:2 }}</h2>
+        <form method="POST" action="{% url 'confirm_purchase' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn">Confirm Purchase</button>
+        </form>
+    </div>
+</body>
+</html>

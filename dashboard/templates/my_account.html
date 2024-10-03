@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light background color */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            background-color: rgb(0, 0, 0);
+            padding: 15px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+            background-color: #000;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #ec5e17;
+        }
+        .logo {
+            height: 10px; /* Adjust size as needed */
+            width: auto; /* Maintain aspect ratio */
+            margin-right: 1450px;
+            font-size: 1.5em;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: auto;
+        }
+
+        h2 {
+            color: #004d40;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"] {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #009688;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        button:hover {
+            background-color: #00796b;
+        }
+
+        .success-message {
+            color: green;
+        }
+
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <nav class="navbar">
+            <div class="menu">
+                <a href="{% url 'home' %}" class="logo">CropTech</a>
+                <a href="{% url 'home' %}">Home</a>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}">Register</a>
+                {% endif %}
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'my_account' %}">{{ user.username }}</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                {% endif %}
+                
+                <a href="{% url 'about' %}">About</a>
+    
+     
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+    </a>
+    {% if  user.is_authenticated %}
+    <a href="{% url 'logout' %}">Logout</a>
+    {% endif %}
+        </nav>
+    </div><br><br><br><br><br><br><br>
+
+    <div class="container">
+        <h2>My Account</h2>
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" value="{{ user_form.username.value }}" required>
+    
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" value="{{ user_form.email.value }}" required>
+    
+            <label for="phone">Phone Number</label>
+            <input type="tel" name="phone" id="phone" value="{{ profile_form.phone.value }}" required>
+    
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+
+    <script>
+        // Add your JavaScript here for any future functionality
+        console.log('My Account page loaded');
+    </script>
+</body>
+</html>

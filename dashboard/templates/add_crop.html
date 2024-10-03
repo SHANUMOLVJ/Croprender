@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Crop</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #343a40;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bff;
+        }
+
+        .main-content {
+            margin-left: 270px; /* Adjust based on the width of the sidebar */
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px; /* Limit the container width */
+            margin: auto; /* Center the container */
+            padding: 20px; /* Inner padding for container */
+            background-color: #fff; /* White background for the form */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .form-group {
+            margin-bottom: 20px; /* Space between form groups */
+        }
+
+        label {
+            font-weight: bold; /* Bold labels */
+            margin-top: 10px; /* Space above labels */
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        textarea {
+            width: 100%; /* Full width input fields */
+            padding: 10px; /* Inner padding */
+            margin-top: 5px; /* Space above inputs */
+            border: 1px solid #ced4da; /* Border color */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 16px; /* Font size for inputs */
+        }
+
+        button {
+            width: 100%; /* Full width button */
+            padding: 10px;
+            font-size: 18px;
+            background-color: #007bff; /* Button color */
+            color: white; /* Text color */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Darker color on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h3 class="text-center text-white">Admin Menu</h3>
+        <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+        <a href="{% url 'manage_users' %}">Manage Users</a>
+        <!-- <a href="#">View Reports</a> -->
+        <a href="{% url 'add_crop' %}">Add Crops</a>
+        <a href="{% url 'manage_crops' %}">Manage Crops</a>
+        <a href="#">Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h1>Add Crop</h1>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_name">Crop Name</label>
+                    {{ form.name }}
+                </div>
+                <div class="form-group">
+                    <label for="id_image">Crop Image</label>
+                    {{ form.image }}
+                </div>
+                <div class="form-group">
+                    <label for="id_description">Description</label>
+                    {{ form.description }}
+                </div>
+                <div class="form-group">
+                    <label for="id_price">Price</label>
+                    {{ form.price }}
+                </div>
+                <div class="form-group">
+                    <label for="id_stock_quantity">Stock Quantity</label>
+                    {{ form.stock_quantity }}
+                </div>
+                <button type="submit">Add Crop</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

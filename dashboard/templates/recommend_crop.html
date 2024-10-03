@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommendation System</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light background color */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            background-color: rgb(0, 0, 0);
+            padding: 15px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+            background-color: #000;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #ec5e17;
+        }
+
+
+        /* Container for form and results */
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 450px;
+            margin: 50px auto;
+        }
+
+        /* Form heading */
+        h2 {
+            text-align: center;
+            color: #005f73;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            border-color: #005f73;
+            outline: none;
+        }
+        .logo {
+            height: 10px; /* Adjust size as needed */
+            width: auto; /* Maintain aspect ratio */
+            margin-right: 1250px;
+            font-size: 1.5em;
+        }
+
+
+        /* Button styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #005f73;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0a9396;
+        }
+
+        /* Result box styling */
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e6f1f2;
+            border-left: 5px solid #005f73;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            color: #005f73;
+        }
+
+        .result h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            nav a {
+                font-size: 16px;
+                margin-left: 10px;
+            }
+
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="menu">
+            <a href="{% url 'home' %}" class="logo">CropTech</a>
+            <a href="{% url 'home' %}">Home</a>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'my_account' %}">{{ user.username }}</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+        
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact_us' %}">Contact Us</a>
+            <a href="{% url 'chatbot' %}">Any Help</a>
+            <a href="{% url 'view_cart' %}" class="cart-link">Cart
+                {% if cart_count > 0 %}
+                    <span class="cart-count">({{ cart_count }})</span>
+                {% endif %}
+            </a>
+            {% if  user.is_authenticated %}
+            <a href="{% url 'logout' %}">Logout</a>
+            {% endif %}
+        </div>
+    </nav><br><br><br><br><br>
+
+    <!-- Main container for crop recommendation system -->
+    <div class="container">
+        <h2>Crop Recommendation System</h2>
+        <form id="cropForm">
+            <div class="form-group">
+                <label for="nitrogen">Nitrogen</label>
+                <input type="number" name="nitrogen" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="phosphorus">Phosphorus</label>
+                <input type="number" name="phosphorus" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="potassium">Potassium</label>
+                <input type="number" name="potassium" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="temperature">Temperature (°C)</label>
+                <input type="number" name="temperature" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="humidity">Humidity (%)</label>
+                <input type="number" name="humidity" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="ph_value">pH Value</label>
+                <input type="number" name="ph_value" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="rainfall">Rainfall (mm)</label>
+                <input type="number" name="rainfall" step="0.01" required>
+            </div>
+            <button type="submit" id="predictCrop">Predict Crop</button>
+            <button type="button" id="generateReport" disabled>Generate Report</button>
+        </form>
+
+        <!-- Result Display -->
+        <div class="result" id="resultDiv">
+            <h3>Recommended Crop:</h3>
+            <p id="cropName"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('cropForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(event.target);
+            const data = {};
+            formData.forEach((value, key) => data[key] = parseFloat(value));
+            
+            // Call the recommendation function
+            const recommendedCrop = recommendCrop(data);
+            
+            // Display the result
+            document.getElementById('cropName').textContent = recommendedCrop;
+            document.getElementById('resultDiv').style.display = 'block';
+            
+            // Enable the 'Generate Report' button
+            document.getElementById('generateReport').disabled = false;
+        });
+
+        document.getElementById('generateReport').addEventListener('click', function() {
+            const cropName = document.getElementById('cropName').textContent;
+            if (cropName) {
+                // Create a new jsPDF instance
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                // Add title and content to the PDF
+                doc.setFontSize(18);
+                doc.text("Crop Recommendation Report", 14, 20);
+                doc.setFontSize(12);
+                doc.text(`Recommended Crop: ${cropName}`, 14, 30);
+                doc.text("", 14, 40); // Add a blank line
+
+                const inputs = ['nitrogen', 'phosphorus', 'potassium', 'temperature', 'humidity', 'ph_value', 'rainfall'];
+                inputs.forEach((input, index) => {
+                    const value = document.querySelector(`input[name="${input}"]`).value;
+                    doc.text(`${input.charAt(0).toUpperCase() + input.slice(1)}: ${value}`, 14, 50 + (index * 10));
+                });
+
+                // Save the PDF
+                doc.save('crop_report.pdf');
+            }
+        });
+
+        function recommendCrop(data) {
+            let crop = "Wheat";  // Default crop recommendation
+
+            if (data.nitrogen > 50 && data.ph_value > 7 && data.temperature > 20 && data.humidity > 60) {
+                crop = "Rice";
+            } else if (data.temperature > 25 && data.humidity > 60 && data.nitrogen < 50) {
+                crop = "Maize";
+            } else if (data.phosphorus > 30 && data.humidity < 50) {
+                crop = "Barley";
+            } else if (data.nitrogen > 30 && data.potassium < 20 && data.rainfall > 700) {
+                crop = "Sorghum";
+            } else if (data.temperature < 10 && data.humidity < 40) {
+                crop = "Oats";
+            } else if (data.ph_value > 6.5 && data.rainfall > 1000) {
+                crop = "Sugarcane";
+            } else if (data.phosphorus > 40 && data.potassium > 50) {
+                crop = "Soybean";
+            } else if (data.temperature < 20 && data.humidity > 70) {
+                crop = "Peanut";
+            } else if (data.nitrogen > 60 && data.temperature > 30 && data.humidity < 50) {
+                crop = "Millet";
+            } else if (data.rainfall < 300 && data.temperature > 25) {
+                crop = "Groundnut";
+            } else if (data.phosphorus < 30 && data.potassium > 30 && data.humidity > 70) {
+                crop = "Sunflower";
+            } else if (data.nitrogen < 20 && data.phosphorus < 20 && data.potassium < 20) {
+                crop = "Chickpea";
+            } // Add more conditions as needed
+
+            return crop;
+        }
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    {% load static %}
+    <style>
+        /* Basic reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4; /* Light background color */
+            color: #333; /* Default text color */
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            height: 150px; /* Adjust based on your needs */
+            background-color: #fff; /* Background color for the header */
+            padding: 20px; /* Padding for better spacing */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+            width: 100%; /* Make the header fill the width */
+            position: relative; /* Allow absolute positioning for child elements */
+        }
+
+        .logo-link {
+            display: block;
+            margin-right: 20px; /* Space between logo and navigation */
+        }
+
+        .logo {
+            height: 10px; /* Adjust size as needed */
+            width: auto; /* Maintain aspect ratio */
+            margin-right: 850px;
+            font-size: 1.5em;
+        }
+
+        /* Navbar styling */
+        .navbar {
+            display: flex;
+            justify-content: right; /* Center the menu */
+            align-items: right;
+            background-color: rgb(0, 0, 0); /* Semi-transparent black */
+            padding: 30px; /* Padding for the navbar */
+            border-radius: 5px; /* Rounded corners for the navbar */
+            width: 100%; /* Full width */
+            position: absolute; /* Position navbar over the hero section */
+            top: 0px; /* Adjust top position */
+            left: 50%; /* Center it horizontally */
+            transform: translateX(-50%); /* Center adjustment */
+            z-index: 1; /* Ensure navbar is on top */
+            
+        }
+
+        .menu {
+            display: flex;
+            gap: 30px; /* Space between navigation links */
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #fff; /* Text color for navigation links */
+            padding: 10px 15px; /* Padding for better touch target */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: rgba(236, 94, 23, 0.8); /* Background color on hover with slight transparency */
+        }
+
+        .cart-count {
+            background-color: #ec5e17; /* Color for cart count */
+            color: white; /* Text color */
+            border-radius: 50%; /* Circle shape */
+            padding: 5px 10px; /* Padding for the count */
+            font-size: 0.9em; /* Smaller font size */
+            margin-left: 5px; /* Space between text and count */
+        }
+
+        /* Hero section styling */
+        .hero {
+            position: relative;
+            height: 1050px; /* Adjust height as needed */
+            background-image: url("{% static 'images/logo1.jpg' %}"); /* Replace with your image path */
+            background-size: cover; /* Cover the entire section */
+            background-position: center; /* Center the image */
+            display: flex;
+            justify-content: center; /* Center text horizontally */
+            align-items: center; /* Center text vertically */
+            color: white; /* Text color */
+            text-align: center; /* Center text */
+            overflow: hidden; /* Hide overflow */
+            margin-bottom: 50px;
+            
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.6); /* Dark overlay for text contrast */
+            padding: 30px; /* Padding for better spacing */
+            border-radius: 10px; /* Rounded corners */
+            z-index: 1; /* Ensure overlay is above background */
+        }
+
+        h1 {
+            font-size: 2.5em; /* Large heading for welcome message */
+            margin-bottom: 10px; /* Space below heading */
+        }
+
+        p {
+            font-size: 1.2em; /* Increase paragraph text size */
+            line-height: 1.5; /* Better line height for readability */
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1200px; /* Maximum width for better layout */
+            margin: 0 auto; /* Center the container */
+        }
+
+        .row {
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap to the next line */
+    justify-content: space-between; /* Space out cards evenly */
+}
+
+.card {
+    border: 1px solid #ddd; /* Card border */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Clip any overflowing content */
+    transition: box-shadow 0.3s ease; /* Add shadow on hover */
+    width: calc(20% - 20px); /* Set card width for five cards in a row */
+    margin-bottom: 20px; /* Spacing between rows */
+    background-color: #fff; /* White background for cards */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+
+        .card img {
+            width: 100%; /* Full width of the card */
+            height: auto; /* Maintain aspect ratio */
+            max-height: 150px; /* Limit height to make it smaller */
+            object-fit: cover; /* Crop image to fit */
+        }
+
+        .card-body {
+            padding: 15px; /* Padding for card body */
+        }
+
+        .price {
+            font-size: 1.25em; /* Larger font size for price */
+            color: #28a745; /* Green color for price */
+            margin: 10px 0; /* Margin for spacing */
+        }
+
+        .card-body .btn {
+            padding: 10px 15px; /* Padding for the button */
+            background-color: #28a745; /* Green background color */
+            color: white; /* White text color */
+            border: none; /* Remove default border */
+            border-radius: 5px; /* Rounded corners */
+            text-align: center; /* Center text */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s ease; /* Smooth transition */
+            display: inline-block; /* Allow margin */
+            margin-top: 10px; /* Space above the button */
+        }
+        h1{
+            text-align: center;
+        }
+        
+        
+        .popupMessages {
+    margin: 20px;
+    padding: 10px;
+    background-color: #d4edda; /* Light green background */
+    color: #155724; /* Dark green text */
+    border: 1px solid #c3e6cb; /* Light green border */
+    border-radius: 5px; /* Rounded corners */
+    border: 1px solid #ddd; /* Card border */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Clip any overflowing content */
+    transition: box-shadow 0.3s ease; /* Add shadow on hover */
+    width: calc(20% - 20px); /* Set card width for five cards in a row */
+    margin-bottom: 20px; /* Spacing between rows */
+    background-color: #fff; /* White background for cards */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+        .card-body .btn:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                width: calc(48% - 10px); /* Two cards on smaller screens */
+            }
+
+            .navbar {
+                flex-direction: column; /* Stack navbar items on small screens */
+                align-items: flex-start; /* Align to start */
+                padding: 10px; /* Less padding */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 100%; /* Full width on mobile */
+            }
+
+            h1 {
+                font-size: 2em; /* Smaller heading on mobile */
+            }
+
+            .overlay {
+                padding: 20px; /* Less padding on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="popupMessage" class="popup-message" style="display: none;">
+        <p id="popupContent"></p>
+    </div>
+
+    <!-- New Hero Section with Background Image -->
+    <div class="hero">
+        <nav class="navbar">
+            <div class="menu">
+                <a href="{% url 'home' %}" class="logo">CropTech</a>
+                <a href="{% url 'home' %}">Home</a>
+                
+                <!-- Only show Register if the user is not authenticated -->
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}">Register</a>
+                {% endif %}
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'my_account' %}">{{ user.username }}</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                {% endif %}
+                
+                <a href="{% url 'about' %}">About</a>
+                <a href="{% url 'recommend_crop' %}">Crop Recommendation</a>
+                <a href="{% url 'contact_us' %}">Contact Us</a>
+                <a href="{% url 'chatbot' %}">Any Help</a>
+                <a href="{% url 'admin_login' %}">Admin</a>
+                <a href="{% url 'view_cart' %}" class="cart-link">Cart
+                    {% if cart_count > 0 %}
+                        <span class="cart-count">({{ cart_count }})</span>
+                    {% endif %}
+                </a>
+                {% if  user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+                {% endif %}
+            </div>
+        </nav>
+        
+       
+    
+
+        <div class="overlay">
+            <h1>Welcome to CropTech</h1>
+            <p>A Crop Recommendation System helps farmers and agriculturalists choose the most suitable crop for their land based on data like nitrogen, phosphorous, potassium, humidity, temperature, pH value, and rainfall. By analyzing this data, the system predicts the best crops to grow, leading to higher yields, efficient resource usage, and improved sustainability. This tool empowers users to make informed farming decisions for better productivity.</p>
+            
+        </div>
+        
+        
+    </div>
+
+    <div class="container">
+        <h1>CROPS </h1>
+        <div class="row">
+            {% for crop in crops %}
+            <div class="card">
+                <img src="{{ crop.image.url }}" class="card-img-top" alt="{{ crop.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ crop.name }}</h5>
+                    <p class="price">Price: ₹{{ crop.price }}</p>
+                    <p class="card-text">{{ crop.short_description }}</p>
+                    <a href="{% url 'crop_detail' crop.id %}" class="btn">Buy</a>
+                    <form method="POST" action="{% url 'add_to_cart' crop.id %}" style="display: inline-block;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn" style="background-color: #007bff;">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        document.getElementById('welcomeButton').addEventListener('click', function() {
+            alert('Welcome to CropTech!');
+        });
+    </script>
+     {% if messages %}
+     <script>
+         // JavaScript to display the message in the popup
+         window.onload = function() {
+             var message = "{% for message in messages %}{{ message }}{% endfor %}";
+             document.getElementById('popupContent').innerText = message;
+             document.getElementById('popupMessage').style.display = 'block'; // Show the popup
+
+             // Automatically close the popup after 3 seconds
+             setTimeout(function() {
+                 document.getElementById('popupMessage').style.display = 'none';
+             }, 3000);
+         }
+     </script>
+ {% endif %}
+
+</body>
+</html>

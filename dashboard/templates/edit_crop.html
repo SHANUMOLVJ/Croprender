@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Crop</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #343a40;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bff;
+        }
+
+        .container {
+          /* Adjust based on the width of the sidebar */
+            padding: 20px;
+            margin-right: 200px;
+        }
+
+        .form-group {
+            margin-bottom: 20px; /* Space between form groups */
+        }
+
+        label {
+            font-weight: bold; /* Bold labels */
+            margin-top: 10px; /* Space above labels */
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        textarea {
+            width: 100%; /* Full width input fields */
+            padding: 10px; /* Inner padding */
+            margin-top: 5px; /* Space above inputs */
+            border: 1px solid #ced4da; /* Border color */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 16px; /* Font size for inputs */
+        }
+
+        .card {
+            margin-top: 20px; /* Space above card */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h3 class="text-center text-white">Admin Menu</h3>
+      
+        <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+        <a href="{% url 'manage_users' %}">Manage Users</a>
+        <a href="{% url 'add_crop' %}">Add Crops</a>
+        <a href="{% url 'manage_crops' %}">Manage Crops</a>
+        <a href="{% url 'manage_crops' %}">Manage Crops</a>
+        <a href="{% url 'feedback_admin' %}">Feedbacks</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+    <div class="container">
+        <h1>Edit Crop</h1>
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_name">Crop Name</label>
+                        {{ form.name}}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_image">Crop Image</label>
+                        {{ form.image }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_description">Description</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_price">Price</label>
+                        {{ form.price}}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_stock_quantity">Stock Quantity</label>
+                        {{ form.stock_quantity}}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Crop</button>
+                    <a href="{% url 'manage_crops' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

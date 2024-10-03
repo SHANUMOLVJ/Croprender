@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ crop.name }} - CropTech</title>
+    {% load static %}
+    <style>
+        /* Basic reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light background color */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            background-color: rgb(0, 0, 0);
+            padding: 15px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+            background-color: #000;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #ec5e17;
+        }
+
+        .container {
+            max-width: 500px; /* Limit the width for better readability */
+            margin: 20px auto; /* Center container */
+            padding: 20px;
+            border: 1px solid #ddd; /* Border for the container */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for the container */
+            background-color: #fff; /* Background color */
+        }
+
+        h1 {
+            font-size: 2em; /* Larger font size for the title */
+            margin-bottom: 10px; /* Space below the title */
+        }
+
+        img {
+            max-width: 100%; /* Responsive image */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 10px; /* Rounded corners for image */
+            margin-bottom: 20px; /* Space below the image */
+        }
+
+        p {
+            margin: 10px 0; /* Margin for paragraphs */
+        }
+        .logo {
+            height: 10px; /* Adjust size as needed */
+            width: auto; /* Maintain aspect ratio */
+            margin-right: 1250px;
+            font-size: 1.5em;
+        }
+
+
+        form {
+            margin-top: 20px; /* Space above the form */
+            padding: 10px; /* Padding for the form */
+            border: 1px solid #ddd; /* Border for the form */
+            border-radius: 5px; /* Rounded corners for the form */
+            background-color: #f9f9f9; /* Light background for the form */
+        }
+
+        label {
+            margin-right: 10px; /* Space between label and input */
+        }
+
+        input[type="number"] {
+            padding: 5px; /* Padding for input */
+            border: 1px solid #ccc; /* Border for input */
+            border-radius: 5px; /* Rounded corners for input */
+            margin-right: 10px; /* Space between input and button */
+        }
+
+        .btn {
+            padding: 10px 15px; /* Padding for the button */
+            background-color: #28a745; /* Green background color */
+            color: white; /* White text color */
+            border: none; /* Remove default border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .btn:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="menu">
+            <a href="{% url 'home' %}" class="logo">CropTech</a>
+            <a href="{% url 'home' %}">Home</a>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'my_account' %}">{{ user.username }}</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+        
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact_us' %}">Contact Us</a>
+            <a href="{% url 'chatbot' %}">Any Help</a>
+            <a href="{% url 'view_cart' %}" class="cart-link">Cart
+                {% if cart_count > 0 %}
+                    <span class="cart-count">({{ cart_count }})</span>
+                {% endif %}
+            </a>
+            {% if  user.is_authenticated %}
+            <a href="{% url 'logout' %}">Logout</a>
+            {% endif %}
+        </div>
+    </nav><br><br><br><br><br>
+
+    <div class="container">
+        <h1>{{ crop.name }}</h1>
+        <img src="{{ crop.image.url }}" alt="{{ crop.name }}">
+        <p>{{ crop.description }}</p>
+        <p>Price: ₹{{ crop.price }}</p>
+
+        <form method="POST" action="{% url 'purchase_crop' crop.id %}">
+            {% csrf_token %}
+            <label for="quantity">Quantity:</label>
+            <input type="number" name="quantity" min="1" max="{{ crop.stock_quantity }}" required>
+            <button type="submit" class="btn">Buy</button>
+        </form>
+    </div>
+</body>
+</html>

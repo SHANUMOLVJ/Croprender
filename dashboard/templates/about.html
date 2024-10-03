@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <style>
+        /* Global Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light background color */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            background-color: rgb(0, 0, 0);
+            padding: 15px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+            background-color: #000;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .logo {
+            height: 10px; /* Adjust size as needed */
+            width: auto; /* Maintain aspect ratio */
+            margin-right: 1200px;
+            font-size: 1.5em;
+        }
+
+
+        .menu a {
+            text-decoration: none;
+            color: #fff;
+            padding: 15px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #ec5e17;
+        }
+
+
+        /* Container and Layout */
+        .about-container {
+            max-width: 10000px;
+            margin: 10px auto;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Typography */
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #7f8c8d;
+            text-align: justify;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        /* Mission, Vision, and Team Sections */
+        .mission, .vision, .team {
+            margin-top: 40px;
+        }
+
+        /* Team Members Section */
+        .team-members {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .team-member {
+            text-align: center;
+            flex: 1;
+            margin: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .team-member:hover {
+            transform: scale(1.05);
+        }
+
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Button Styling */
+        button {
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 6px;
+            cursor: pointer;
+            display: block;
+            margin: 40px auto;
+            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.3);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            background-color: #16a085;
+            box-shadow: 0 6px 20px rgba(22, 160, 133, 0.4);
+        }
+
+        /* Hidden Section (to be revealed) */
+        .hidden-section {
+            display: none;
+            background-color: #ecf0f1;
+            padding: 30px;
+            margin-top: 30px;
+            border-left: 5px solid #1abc9c;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Link Styling */
+        a {
+            color: #1abc9c;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: #fd9800;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="menu">
+            <a href="{% url 'home' %}" class="logo">CropTech</a>
+            <a href="{% url 'home' %}">Home</a>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'my_account' %}">{{ user.username }}</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+        
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact_us' %}">Contact Us</a>
+            <a href="{% url 'chatbot' %}">Any Help</a>
+            <a href="{% url 'view_cart' %}" class="cart-link">Cart
+                {% if cart_count > 0 %}
+                    <span class="cart-count">({{ cart_count }})</span>
+                {% endif %}
+            </a>
+            {% if  user.is_authenticated %}
+            <a href="{% url 'logout' %}">Logout</a>
+            {% endif %}
+        </div>
+    </nav><br><br><br><br><br>
+
+    <div class="about-container">
+        <h1>About Us</h1>
+        <p>We are dedicated to providing the best solutions for crop recommendations to ensure sustainable farming and agricultural success. Our mission is to empower farmers with data-driven insights and easy-to-use tools that transform farming practices worldwide.</p>
+
+        <div class="mission">
+            <h2>Our Mission</h2>
+            <p>To help farmers make informed decisions about crop selection and land management using innovative technology and machine learning algorithms, ensuring better yields and sustainable growth.</p>
+        </div>
+
+        <div class="vision">
+            <h2>Our Vision</h2>
+            <p>We aim to become the leading provider of AI-powered agricultural tools, offering scalable and sustainable solutions for global food security, environmental health, and thriving agricultural economies.</p>
+        </div>
+
+        <!-- <div class="team">
+            <h2>Meet Our Team</h2>
+            <div class="team-members">
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/150" alt="John Doe">
+                    <p><strong>John Doe</strong></p>
+                    <p>CEO & Founder</p>
+                </div>
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/150" alt="Jane Smith">
+                    <p><strong>Jane Smith</strong></p>
+                    <p>Lead Developer</p>
+                </div>
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/150" alt="Sara Johnson">
+                    <p><strong>Sara Johnson</strong></p>
+                    <p>Data Scientist</p>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="toggleMoreInfo()">Learn More About Us</button>
+
+        <div id="more-info" class="hidden-section">
+            <h2>Our Story</h2>
+            <p>We started with a passion for merging technology with agriculture. Our diverse team brings together years of expertise in machine learning, farming practices, and software development. Together, we’ve created an intelligent platform that empowers farmers globally to make better decisions with AI-driven insights.</p>
+            <p>Over the years, we've transformed the way farmers interact with their land, helping them grow smarter, not harder. From crop predictions to soil health monitoring, our AI recommendation system ensures precision farming with minimal effort.</p>
+        </div>
+    </div> -->
+
+    <script>
+        // Smooth toggle for more information
+        function toggleMoreInfo() {
+            const moreInfoSection = document.getElementById("more-info");
+            if (moreInfoSection.style.display === "block") {
+                moreInfoSection.style.display = "none";
+                window.scrollTo(0, document.body.scrollHeight);
+            } else {
+                moreInfoSection.style.display = "block";
+                window.scrollTo(0, moreInfoSection.offsetTop);
+            }
+        }
+    </script>
+
+</body>
+</html>

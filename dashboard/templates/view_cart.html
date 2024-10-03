@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - CropTech</title>
+    {% load static %}
+    <style>
+        /* Basic reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light background color */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            background-color: rgb(0, 0, 0);
+            padding: 15px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1;
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+            background-color: #000;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #ec5e17;
+        }
+
+        /* Container styles */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .btn-remove, .btn-update {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1em;
+            color: #007bff;
+            margin: 0 5px;
+        }
+        .logo {
+            height: 10px; /* Adjust size as needed */
+            width: auto; /* Maintain aspect ratio */
+            margin-right: 1400px;
+            font-size: 1.5em;
+        }
+
+        .total {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        .crop-image {
+            height: 50px;
+            width: auto;
+        }
+        .btn-purchase-all {
+            background-color: #ec5e17;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="menu">
+            <a href="{% url 'home' %}" class="logo">CropTech</a>
+            <a href="{% url 'home' %}">Home</a>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'my_account' %}">{{ user.username }}</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+        
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'contact_us' %}">Contact Us</a>
+            <a href="{% url 'chatbot' %}">Any Help</a>
+            <a href="{% url 'view_cart' %}" class="cart-link">Cart
+                {% if cart_count > 0 %}
+                    <span class="cart-count">({{ cart_count }})</span>
+                {% endif %}
+            </a>
+        </div>
+    </nav><br><br><br><br><br><br><br><br>
+
+    <div class="container">
+        <h1>Your Cart</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Crop</th>
+                    <th>Image</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.crop.name }}</td>
+                    <td>
+                        <img src="{{ item.crop.image.url }}" alt="{{ item.crop.name }}" class="crop-image">
+                    </td>
+                    <td>
+                        <form method="POST" action="{% url 'update_cart_quantity' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-update" name="action" value="decrease">-</button>
+                            {{ item.quantity }} 
+                            <button type="submit" class="btn-update" name="action" value="increase">+</button>
+                        </form>
+                    </td>
+                    <td>₹{{ item.total_price }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'remove_from_cart' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-remove">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <form method="POST" action="{% url 'purchase_all_crops' %}">
+            {% csrf_token %}
+            {% for item in cart_items %}
+                <input type="hidden" name="cart_item_ids" value="{{ item.id }}">
+            {% endfor %}
+            <button type="submit" class="btn-purchase-all">Purchase All</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Prediction Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #66b09a;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        p {
+            color: #333;
+            font-size: 18px;
+        }
+        button {
+            background-color: #17ced8; /* Pista Green */
+            color: rgb(255, 255, 255);
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #df37ad;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Crop Prediction Report</h1>
+        <p id="cropRecommendation"></p>
+        <button id="downloadReport">Download Report as PDF</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Retrieve the recommended crop from localStorage
+            const cropName = localStorage.getItem('recommendedCrop');
+            if (cropName) {
+                
+                document.getElementById('cropRecommendation').textContent = `Recommended Crop: ${cropName}`;
+                
+                document.getElementById('downloadReport').addEventListener('click', function() {
+                    // Add title
+                    doc.setFontSize(20);
+                    doc.text('Crop Prediction Report', 20, 20);
+
+                    doc.setFontSize(16);
+                    doc.text(`Recommended Crop: ${cropName}`, 20, 30);
+
+                    // Save the PDF
+                    doc.save('crop_prediction_report.pdf');
+                });
+            } else {
+                document.getElementById('cropRecommendation').textContent = 'No recommendation available.';
+            }
+        });
+       // Add recommended crop
+        
+        function recommendCrop(data) {
+            let crop = "Barley";  // Default crop recommendation
+
+            if (data.nitrogen > 50 && data.ph_value > 7 && data.temperature > 20 && data.humidity > 60) {
+                crop = "Rice";
+            } else if (data.temperature > 25 && data.humidity > 60 && data.nitrogen < 50) {
+                crop = "Maize";
+            } else if (data.phosphorus > 30 && data.humidity < 50) {
+                crop = "Barley";
+            } else if (data.nitrogen > 30 && data.potassium < 20 && data.rainfall > 700) {
+                crop = "Sorghum";
+            } else if (data.temperature < 10 && data.humidity < 40) {
+                crop = "Oats";
+            } else if (data.ph_value > 6.5 && data.rainfall > 1000) {
+                crop = "Sugarcane";
+            } else if (data.phosphorus > 40 && data.potassium > 50) {
+                crop = "Soybean";
+            } else if (data.temperature < 20 && data.humidity > 70) {
+                crop = "Peanut";
+            } else if (data.nitrogen > 60 && data.temperature > 30 && data.humidity < 50) {
+                crop = "Millet";
+            } else if (data.rainfall < 300 && data.temperature > 25) {
+                crop = "Groundnut";
+            } else if (data.phosphorus < 30 && data.potassium > 30 && data.humidity > 70) {
+                crop = "Sunflower";
+            } else if (data.nitrogen < 20 && data.phosphorus < 20 && data.potassium < 20) {
+                crop = "Chickpea";
+            } else if (data.temperature > 35 && data.rainfall < 200) {
+                crop = "Pigeon Pea";
+            } else if (data.temperature > 30 && data.humidity > 75) {
+                crop = "Sesame";
+            } else if (data.potassium > 60 && data.humidity < 40) {
+                crop = "Rapeseed";
+            } else if (data.nitrogen > 70 && data.temperature < 15) {
+                crop = "Lentil";
+            } else if (data.humidity > 80 && data.temperature > 20) {
+                crop = "Kidney Bean";
+            } else if (data.rainfall > 1500 && data.humidity > 80) {
+                crop = "Banana";
+            } else if (data.temperature > 25 && data.humidity < 50) {
+                crop = "Tobacco";
+            } else if (data.rainfall > 1000 && data.temperature > 15) {
+                crop = "Rubber";
+            } else if (data.humidity < 30 && data.rainfall < 200) {
+                crop = "Jute";
+            } else if (data.phosphorus > 50 && data.potassium < 40) {
+                crop = "Mustard";
+            } else if (data.temperature < 5 && data.rainfall > 800) {
+                crop = "Tea";
+            } else if (data.temperature > 20 && data.humidity > 60 && data.rainfall > 1000) {
+                crop = "Coffee";
+            } else if (data.phosphorus > 40 && data.nitrogen > 60) {
+                crop = "Peas";
+            } else if (data.rainfall < 300 && data.temperature < 20) {
+                crop = "Onion";
+            } else if (data.potassium < 30 && data.humidity > 70) {
+                crop = "Garlic";
+            } else if (data.temperature > 30 && data.humidity > 65) {
+                crop = "Papaya";
+            } else if (data.rainfall > 800 && data.temperature > 25) {
+                crop = "Mango";
+            } else if (data.humidity < 30 && data.rainfall > 600) {
+                crop = "Grapes";
+            } else if (data.temperature > 30 && data.phosphorus < 20) {
+                crop = "Tomato";
+            } else if (data.phosphorus < 30 && data.temperature < 15) {
+                crop = "Potato";
+            } else if (data.humidity < 40 && data.temperature > 25) {
+                crop = "Chili";
+            }  else if (data.nitrogen > 55 && data.temperature > 20 && data.humidity < 45) {
+                crop = "Barley";
+            } else if (data.humidity > 80 && data.temperature < 25) {
+                crop = "Cabbage";
+            } else if (data.phosphorus > 30 && data.potassium < 50) {
+                crop = "Broccoli";
+            } else if (data.rainfall > 1000 && data.temperature > 25) {
+                crop = "Avocado";
+            } else if (data.humidity < 50 && data.temperature > 25) {
+                crop = "Coconut";
+            } // Add more conditions as needed
+
+            return crop; // Add more conditions as needed
+
+            return crop;
+        }
+
+
+            
+            
+        
+
+    </script>
+</body>
+</html>
